@@ -75,10 +75,10 @@ defmodule HttpcBench do
     end
   end
 
-  defp get_until_success(client) do
+  defp get_until_success(client, retries_left \\ 100) do
     case client.get() do
       :ok -> :ok
-      _ -> get_until_success(client)
+      err -> if retries_left < 1, do: err, else: get_until_success(client, retries_left - 1)
     end
   end
 
