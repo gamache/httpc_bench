@@ -46,7 +46,7 @@ defmodule HttpcBench do
         }
 
       :ok ->
-        fun = fn -> client.get() end
+        fun = fn -> get_until_success(client) end
 
         results =
           :timing_hdr.run(
@@ -72,6 +72,13 @@ defmodule HttpcBench do
           qps: qps,
           errors: errors,
         }
+    end
+  end
+
+  defp get_until_success(client) do
+    case client.get() do
+      :ok -> :ok
+      _ -> get_until_success(client)
     end
   end
 
